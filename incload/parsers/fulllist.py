@@ -6,6 +6,8 @@ import HTMLParser
 import re
 # we need some exceptions here
 from incload.exceptions import ParseError
+# and the globals too
+from incload import globals
 
 class Parser(HTMLParser.HTMLParser):
   # for this class, we'll need some constructor
@@ -21,31 +23,25 @@ class Parser(HTMLParser.HTMLParser):
   # as you should know if you're familiar with the HTMLParser concept,
   # you need to re-declare important methods so you get notified if some important stuff was found
   # so, let's do that here
-  def handle_starttag(tag,attr):
-    # if there is already some open tag registered, something went wrong
-    # in this case, we should raise some exceptions
-    if self.__OpenTag:
-      raise ParseError()
+  def handle_starttag(self, tag,attr):
     # for this page, only the a tags are interesting for us.
     # also, they need to contain some catalog identifier in them
     # so, we need to identify a tags, capture their links and let handle_data do the remaining work for us
-    if tag=="a" and "href" in attr:
-      self.__OpenTag=True
-      self.__Link=attr["href"]
-  # the end tags should of course be registered too
-  def handle_endtag(tag):
-    # if we didn't get any starttag, something went wrong here
-    if not self.__OpenTag:
-      raise ParseError()
-    # but only if an a tag was found
     if tag=="a":
-      self.__OpenTag=False
-      self.__Link=""
-  def handle_data(data):
+      # we need to find the href attribute, if any
+      for i in range(len(attr)):
+        if attr[i][0]=="href":
+          self.__OpenTag=True
+          self.__Link=attr[i][1]
+          return
+    # otherwise we will reset all data
+    self.__OpenTag=False
+    self.__Link=""
+  def handle_data(self, data):
     # the text inside the link needs to match the ISRC identifyer regexp, so let's check that and add the link to the result list if successful
     if self.__Identifier.match(data):
-      self.__ResultList.append(self.Link)
+      self.__ResultList.append(self.__Link)
   # finally we need some getter to retrieve the resulting list
-  property Result:
-    def __get__(self):
-      return self.__ResultList
+  @property
+  def Result(self):
+    return self.__ResultList

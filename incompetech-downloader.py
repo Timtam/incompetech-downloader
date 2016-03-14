@@ -10,7 +10,9 @@ import os
 import os.path
 import sys
 # here we get stuff from our own source
+from incload.downloader import Downloader
 from incload import globals
+from incload.parsers import fulllist
 
 # starting the argument command-line parsing
 Parser=argparse.ArgumentParser()
