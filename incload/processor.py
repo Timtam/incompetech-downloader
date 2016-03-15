@@ -56,6 +56,9 @@ class Processor(object):
           print "An error ocurred while creating the download folder. Please fix this error and try again"
           sys.exit(1)
       downloadfile=os.path.join(downloadfolder,parser.SongTitle+".mp3")
+      if os.path.exists(downloadfile):
+        print "This file already exists."
+        continue
       # let's get the actually important downloader ready :)
       downloader=Downloader(globals.Incompetech+parser.Link)
       downloader.call()
@@ -65,3 +68,4 @@ class Processor(object):
       # and after that, save the file
       downloader.write(downloadfile,True)
       print "Finished!"
+    print "Finished download! Have fun!"
