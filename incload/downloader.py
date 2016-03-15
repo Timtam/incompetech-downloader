@@ -115,16 +115,24 @@ class Downloader(threading.Thread):
     return self.__Filesize
   @property
   def DownloadedSize(self):
-    self.__RetrievalLock.acquire()
-    size=self.__Downloaded
-    self.__RetrievalLock.release()
-    return size
+    try:
+      self.__RetrievalLock.acquire()
+      size=self.__Downloaded
+      self.__RetrievalLock.release()
+      return size
+    except KeyboardInterrupt:
+      self.__RetrievalLock.release()
+      raise KeyboardInterrupt()
   @property
   def RemainingSize(self):
     return self.FullSize-self.DownloadedSize
   @property
   def Running(self):
-    self.__RetrievalLock.acquire()
-    state=self.__Running
-    self.__RetrievalLock.release()
-    return state
+    try:
+      self.__RetrievalLock.acquire()
+      state=self.__Running
+      self.__RetrievalLock.release()
+      return state
+    except KeyboardInterrupt:
+      self.__RetrievalLock.release()
+      raise KeyboardInterrupt()
