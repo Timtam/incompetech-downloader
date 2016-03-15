@@ -17,10 +17,14 @@ class Processor(object):
     # let's get started loading the full list
     downloader=Downloader(globals.Incompetech+globals.FullList)
     # we don't need call() here, since incompetech doesn't deliver Content-Length and additional information for web pages
-    downloader.start()
-    print "Downloading song list..."
-    while downloader.Running:
-      time.sleep(0.05)
+    try:
+      downloader.start()
+      print "Downloading song list..."
+      while downloader.Running:
+        time.sleep(0.05)
+    except KeyboardInterrupt:
+      downloader.stop()
+      raise KeyboardInterrupt()
     print "Parsing song list..."
     parser=FullListParser()
     parser.feed(downloader.read())
@@ -33,10 +37,14 @@ class Processor(object):
       # we need to download the song page first
       # doing that, we will need to construct the full link by concatenating them
       downloader=Downloader(globals.Incompetech+link)
-      downloader.start()
-      print "Downloading song %d"%(i+1)
-      while downloader.Running:
-        time.sleep(0.05)
+      try:
+        downloader.start()
+        print "Downloading song %d"%(i+1)
+        while downloader.Running:
+          time.sleep(0.05)
+      except KeyboardInterrupt:
+        downloader.stop()
+        raise KeyboardInterrupt()
       # and now parse the page
       print "Parsing page for song %d"%(i+1)
       parser=SongPageParser()
@@ -62,10 +70,13 @@ class Processor(object):
       # let's get the actually important downloader ready :)
       downloader=Downloader(globals.Incompetech+parser.Link)
       downloader.call()
-      downloader.start()
-      # and show some progress indicator
-      downloader.showProgress()
+      try:
+        downloader.start()
+        # and show some progress indicator
+        downloader.showProgress()
+      except KeyboardInterrupt:
+        downloader.stop()
+        raise KeyboardInterrupt()
       # and after that, save the file
       downloader.write(downloadfile,True)
       print "Finished!"
-    print "Finished download! Have fun!"

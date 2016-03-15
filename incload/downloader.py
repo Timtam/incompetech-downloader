@@ -67,7 +67,7 @@ class Downloader(threading.Thread):
     self.__Running=False
   # we support download canceling
   def stop(self):
-    self.__RetrievealLock.acquire()
+    self.__RetrievalLock.acquire()
     self.__StopEvent.set()
     self.__RetrievalLock.release()
   # we also support retrieval to process it further inside of python
@@ -93,16 +93,21 @@ class Downloader(threading.Thread):
   # it of course doesn't run multi-threaded
   def showProgress(self):
     # if we aren't actually running, we stop this desaster
-    if not self.Running: return
+    if not self.Running:
+      return
     # show some stuff to fill our progress line
     sys.stdout.write("")
     # the displaying loop
-    while self.Running:
-      percentage=self.DownloadedSize*100/self.FullSize
-      line="\rDownloading... %d%% finished"%percentage
-      line=line+" "*(40-len(line))
-      sys.stdout.write(line)
-      time.sleep(1.0)
+    try:
+      while self.Running:
+        percentage=self.DownloadedSize*100/self.FullSize
+        line="\rDownloading... %d%% finished"%percentage
+        line=line+" "*(40-len(line))
+        sys.stdout.write(line)
+        time.sleep(1.0)
+    except KeyboardInterrupt:
+      sys.stdout.write("\n")
+      raise KeyboardInterrupt()
     sys.stdout.write("\n")
   # some properties to retrieve data like remaining size and stuff
   @property
