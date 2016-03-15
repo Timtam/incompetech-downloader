@@ -6,6 +6,8 @@
 
 # the amount of bytes to download at once
 ChunkSize=100*1024
+# sort the downloaded files into the specific genre folders?
+DownloadByGenre=False
 # the path to the full list of incompetech
 FullList="/music/royalty-free/full_list.php"
 # the incompetech base url
@@ -13,10 +15,16 @@ Incompetech="http://incompetech.com"
 # needed to identify the catalog number in some submodules
 # it's a regexp
 ISRC="USUAN\d+"
+# contains the path to the ISRC list on incompetech
+# contains all the music sorted by date
+ISRCList="/music/royalty-free/isrc_to_name.php"
 # self-explanatory
 OutputDirectory="./"
-# sort the downloaded files into the specific genre folders?
-SortByGenre=False
+# the sorting flags
+SORT_ALPHABETICAL="alphabetical"
+SORT_DATE="date"
+# the sort status
+Sort=SORT_ALPHABETICAL
 # the web user-agent to be used while connecting to incompetech
 # will be used by the downloading interface
 UserAgent="Incompetech Downloader"

@@ -14,8 +14,13 @@ class Processor(object):
   # constructor not needed yet
   # anyway, execution will be needed
   def execute(self):
-    # let's get started loading the full list
-    downloader=Downloader(globals.Incompetech+globals.FullList)
+    # at first we need to identify the url to use by scanning the selected sorting scheme
+    if globals.Sort==globals.SORT_ALPHABETICAL:
+      link=globals.FullList
+    elif globals.Sort==globals.SORT_DATE:
+      link=globals.ISRCList
+    # let's get started loading the list
+    downloader=Downloader(globals.Incompetech+link)
     # we don't need call() here, since incompetech doesn't deliver Content-Length and additional information for web pages
     try:
       downloader.start()
@@ -54,7 +59,7 @@ class Processor(object):
       print "\tGenre: %s"%parser.Genre
       # time to construct the actual download target and create folders if needed
       downloadfolder=os.path.abspath(globals.OutputDirectory)
-      if globals.SortByGenre:
+      if globals.DownloadByGenre:
         downloadfolder=os.path.join(downloadfolder,parser.Genre)
       if not os.path.exists(downloadfolder):
         # we will have to create it
