@@ -4,23 +4,15 @@ written by Toni Barth (Timtam)
 pull requests are welcome
 """
 
-# some standard library importing stuff here
-import argparse
-import os
-import os.path
-import sys
-# here we get stuff from our own source
-from incload.downloader import Downloader
-from incload import globals
-from incload.parsers import songpage
+# this program will just call some internals to parse stuff and process the actual download
+# but we'll need imports anyway
+from incload.argumentparser import ArgumentParser
+from incload.processor import Processor
 
-# starting the argument command-line parsing
-Parser=argparse.ArgumentParser()
-Parser.add_argument("-o","--output",help="set the corresponding output directory",type=str)
-Arguments=Parser.parse_args()
-# output directory definition
-if Arguments.output:
-  globals.OutputDirectory=Arguments.output
-if not os.path.exists(globals.OutputDirectory): # failure if not existing
-  print "This output directory doesn't exist."
-  sys.exit(1)
+# we kick off creating an ArgumentParser instance and executing it
+parser=ArgumentParser()
+parser.execute()
+# these two lines executed the whole command-line processing and put parameters into place
+# creating and executing the processor now will be everything we need
+processor=Processor()
+processor.execute()

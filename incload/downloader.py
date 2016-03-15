@@ -2,7 +2,13 @@
 # a wrapper which uses urllib2 (on python2) and threading module to provide a parallelly running downloading interface
 # the downloaded stuff will at first be stored in a StringIO buffer object
 import StringIO
+# some output capabilities
+import sys
+# for sleeping functionalities ;)
+import time
+# for multi-threading purposes
 import threading
+# for internet access
 import urllib2
 # and the globals, as always
 from incload import globals
@@ -61,28 +67,58 @@ class Downloader(threading.Thread):
     self.__Running=False
   # we support download canceling
   def stop(self):
+    self.__RetrievealLock.acquire()
     self.__StopEvent.set()
+    self.__RetrievalLock.release()
   # we also support retrieval to process it further inside of python
   def read(self):
+    # if the download is still running, don't do it
+    if self.Running:
+      return ""
     self.__Buffer.seek(0)
     return self.__Buffer.read()
   # but also writing to file directly
   def write(self, filename, binary=False):
+    # if the download is still running, don't do it
+    if self.Running: 
+      return False
     # construct the opening mode
     mode="w"+("b" if binary else "")
     file=open(filename,mode)
     self.__Buffer.seek(0)
     file.write(self.__Buffer.read())
+    return True
+  # we also support some progress indicator
+  # it can be called to progress the download progress while running
+  # it of course doesn't run multi-threaded
+  def showProgress(self):
+    # if we aren't actually running, we stop this desaster
+    if not self.Running: return
+    # show some stuff to fill our progress line
+    sys.stdout.write("")
+    # the displaying loop
+    while self.Running:
+      percentage=self.Downloaded*100/self.FullSize
+      displaying=globals.ProgressBarLength*percentage/100
+      sys.stdout.write("\r%s"%("%"*displaying))
+      time.sleep(1.0)
+    sys.stdout.write("\n")
   # some properties to retrieve data like remaining size and stuff
   @property
   def FullSize(self):
     return self.__Filesize
   @property
   def DownloadedSize(self):
-    return self.__Downloaded
+    self.__RetrievalLock.acquire()
+    size=self.__Downloaded
+    self.__RetrievalLock.release()
+    return size
   @property
   def RemainingSize(self):
-    return self.__Filesize-self.__Downloaded
+    return self.FullSize-self.DownloadedSize
   @property
   def Running(self):
-    return self.__Running
+    self.__RetrievalLock.acquire()
+    state=self.__Running
+    self.__RetrievalLock.release()
+    return state
