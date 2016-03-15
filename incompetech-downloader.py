@@ -12,7 +12,7 @@ import sys
 # here we get stuff from our own source
 from incload.downloader import Downloader
 from incload import globals
-from incload.parsers import fulllist
+from incload.parsers import songpage
 
 # starting the argument command-line parsing
 Parser=argparse.ArgumentParser()

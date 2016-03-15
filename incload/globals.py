@@ -4,10 +4,12 @@
 # here everything important should be declared, so that everything just needs this module to operate effectively
 # by importing this including it's namespace it's possible to see and change everything another module did in here
 
+# the incompetech base url
+BaseUrl="http://incompetech.com"
 # the amount of bytes to download at once
-ChunkSize=1024
+ChunkSize=1024*1024
 # the path to the full list of incompetech
-FullList="http://incompetech.com/music/royalty-free/full_list.php"
+FullList="/music/royalty-free/full_list.php"
 # needed to identify the catalog number in some submodules
 # it's a regexp
 ISRC="USUAN\d+"
