@@ -98,9 +98,10 @@ class Downloader(threading.Thread):
     sys.stdout.write("")
     # the displaying loop
     while self.Running:
-      percentage=self.Downloaded*100/self.FullSize
-      displaying=globals.ProgressBarLength*percentage/100
-      sys.stdout.write("\r%s"%("%"*displaying))
+      percentage=self.DownloadedSize*100/self.FullSize
+      line="\rDownloading... %d%% finished"%percentage
+      line=line+" "*(40-len(line))
+      sys.stdout.write(line)
       time.sleep(1.0)
     sys.stdout.write("\n")
   # some properties to retrieve data like remaining size and stuff
