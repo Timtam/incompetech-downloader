@@ -15,6 +15,8 @@ Incompetech="http://incompetech.com"
 ISRC="USUAN\d+"
 # self-explanatory
 OutputDirectory="./"
+# sort the downloaded files into the specific genre folders?
+SortByGenre=False
 # the web user-agent to be used while connecting to incompetech
 # will be used by the downloading interface
 UserAgent="Incompetech Downloader"

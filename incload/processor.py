@@ -3,6 +3,7 @@
 # we will actually need some importings
 # at first these from the standard lib
 import os.path
+import sys
 import time
 # then the ones we developed
 from incload.downloader import Downloader
@@ -43,6 +44,18 @@ class Processor(object):
       print "Detected song:"
       print "\tTitle: %s"%parser.SongTitle
       print "\tGenre: %s"%parser.Genre
+      # time to construct the actual download target and create folders if needed
+      downloadfolder=os.path.abspath(globals.OutputDirectory)
+      if globals.SortByGenre:
+        downloadfolder=os.path.join(downloadfolder,parser.Genre)
+      if not os.path.exists(downloadfolder):
+        # we will have to create it
+        try:
+          os.mkdir(downloadfolder)
+        except (OSError, IOError):
+          print "An error ocurred while creating the download folder. Please fix this error and try again"
+          sys.exit(1)
+      downloadfile=os.path.join(downloadfolder,parser.SongTitle+".mp3")
       # let's get the actually important downloader ready :)
       downloader=Downloader(globals.Incompetech+parser.Link)
       downloader.call()
@@ -50,5 +63,5 @@ class Processor(object):
       # and show some progress indicator
       downloader.showProgress()
       # and after that, save the file
-      downloader.write(os.path.abspath(os.path.join(globals.OutputDirectory,parser.SongTitle+".mp3")),True)
+      downloader.write(downloadfile,True)
       print "Finished!"

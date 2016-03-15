@@ -11,6 +11,7 @@ class ArgumentParser(object):
   # the constructor will initialize the parser and add all arguments to it
   def __init__(self):
     self.__Parser=argparse.ArgumentParser()
+    self.__Parser.add_argument("-g","--genres",help="sort downloaded files into folders named by their genre",action="store_true")
     self.__Parser.add_argument("-o","--output",help="set the corresponding output directory",type=str)
   # the execute method will execute the parsing and invoke all following stuff
   def execute(self):
@@ -21,3 +22,6 @@ class ArgumentParser(object):
     if not os.path.exists(globals.OutputDirectory): # failure if not existing
       print "This output directory doesn't exist."
       sys.exit(1)
+    # sort them by genre?
+    if args.genres:
+      globals.SortByGenre=True
