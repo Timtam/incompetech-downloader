@@ -14,6 +14,7 @@ class ArgumentParser(object):
     self.__Parser.add_argument("-g","--genres",help="put downloaded files into folders named by their genre",action="store_true")
     self.__Parser.add_argument("-o","--output",help="set the corresponding output directory",type=str)
     self.__Parser.add_argument("-s","--sort",help="sort the download list by parameters. Currently supported are alphabetical and date. Default is alphabetical",type=str)
+    self.__Parser.add_argument("-r","--reverse",help="download the download list in reversed order",action="store_true")
   # the execute method will execute the parsing and invoke all following stuff
   def execute(self):
     args=self.__Parser.parse_args()
@@ -35,3 +36,6 @@ class ArgumentParser(object):
       else:
         print "Unknown sorting scheme supplied."
         sys.exit(1)
+    # reverse the list?
+    if args.reverse:
+      globals.ReverseList=True

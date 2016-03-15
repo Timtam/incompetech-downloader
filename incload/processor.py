@@ -34,6 +34,8 @@ class Processor(object):
     parser=FullListParser()
     parser.feed(downloader.read())
     links=parser.Result
+    if globals.ReverseList:
+      links=links[::-1]
     # we finished parsing, let's get started downloading
     print "Finished song parsing. Found %d songs to download"%len(links)
     for i in range(len(links)):

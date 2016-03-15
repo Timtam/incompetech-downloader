@@ -20,6 +20,8 @@ ISRC="USUAN\d+"
 ISRCList="/music/royalty-free/isrc_to_name.php"
 # self-explanatory
 OutputDirectory="./"
+# reversing the download list can be activated here
+ReverseList=False
 # the sorting flags
 SORT_ALPHABETICAL="alphabetical"
 SORT_DATE="date"
