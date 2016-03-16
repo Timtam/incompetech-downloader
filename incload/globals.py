@@ -5,7 +5,7 @@
 # by importing this including it's namespace it's possible to see and change everything another module did in here
 
 # the amount of bytes to download at once
-ChunkSize=100*1024
+ChunkSize=128*1024
 # sort the downloaded files into the specific genre folders?
 DownloadByGenre=False
 # the path to the full list of incompetech
