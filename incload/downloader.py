@@ -92,7 +92,10 @@ class Downloader(threading.Thread):
   # it can be called to progress the download progress while running
   # it of course doesn't run multi-threaded
   def showProgress(self):
-    # if we aren't actually running, we stop this desaster
+    # while this class is actually an alive thread but download is not running yet, wait until this is the case
+    while self.isAlive() and not self.Running:
+      time.sleep(0.01)
+    # if we aren't actually running, we stop this desaster (meaning we already finished)
     if not self.Running:
       return
     # show some stuff to fill our progress line
