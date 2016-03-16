@@ -87,6 +87,7 @@ class Downloader(threading.Thread):
     file=open(filename,mode)
     self.__Buffer.seek(0)
     file.write(self.__Buffer.read())
+    file.close()
     return True
   # we also support some progress indicator
   # it can be called to progress the download progress while running
@@ -108,10 +109,8 @@ class Downloader(threading.Thread):
         line=line+" "*(40-len(line))
         sys.stdout.write(line)
         time.sleep(1.0)
-    except KeyboardInterrupt:
+    finally:
       sys.stdout.write("\n")
-      raise KeyboardInterrupt()
-    sys.stdout.write("\n")
   # some properties to retrieve data like remaining size and stuff
   @property
   def FullSize(self):
