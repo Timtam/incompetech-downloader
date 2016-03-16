@@ -11,7 +11,14 @@ from incload import globals
 from incload.parsers import FullListParser, SongPageParser
 
 class Processor(object):
+  # all chars forbidden in file names
+  ForbiddenChars=r'<>?":|\/*'
   # constructor not needed yet
+  # will automatically remove all forbidden characters and replace them with underscores
+  def formatFilename(self,filename):
+    for c in self.ForbiddenChars:
+      filename=filename.replace(c, '_')
+    return filename
   # anyway, execution will be needed
   def execute(self):
     # at first we need to identify the url to use by scanning the selected sorting scheme
@@ -70,7 +77,7 @@ class Processor(object):
         except (OSError, IOError):
           print "An error ocurred while creating the download folder. Please fix this error and try again"
           sys.exit(1)
-      downloadfile=os.path.join(downloadfolder,parser.SongTitle+".mp3")
+      downloadfile=os.path.join(downloadfolder,self.formatFilename(parser.SongTitle)+".mp3")
       if os.path.exists(downloadfile):
         print "This file already exists."
         continue
