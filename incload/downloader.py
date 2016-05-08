@@ -61,8 +61,8 @@ class Downloader(threading.Thread):
       self.__RetrievalLock.acquire()
       self.__Downloaded=self.__Downloaded+len(chunk)
       self.__Buffer.write(chunk)
-      chunk=connection.read(globals.ChunkSize)
       self.__RetrievalLock.release()
+      chunk=connection.read(globals.ChunkSize)
     connection.close()
     self.__Running=False
   # we support download canceling
@@ -111,6 +111,11 @@ class Downloader(threading.Thread):
         time.sleep(1.0)
     finally:
       sys.stdout.write("\n")
+  # we can wait until the downloader actually finished
+  def wait(self):
+    # this means we wait while the download is running or the thread is about to start the download
+    while self.isAlive() or self.Running:
+      time.sleep(0.01)
   # some properties to retrieve data like remaining size and stuff
   @property
   def FullSize(self):

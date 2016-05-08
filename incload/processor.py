@@ -4,7 +4,6 @@
 # at first these from the standard lib
 import os.path
 import sys
-import time
 # then the ones we developed
 from incload.downloader import Downloader
 from incload import globals
@@ -32,8 +31,7 @@ class Processor(object):
     try:
       downloader.start()
       print "Downloading song list..."
-      while downloader.Running:
-        time.sleep(0.05)
+      downloader.wait()
     except KeyboardInterrupt:
       downloader.stop()
       raise KeyboardInterrupt()
@@ -54,8 +52,7 @@ class Processor(object):
       try:
         downloader.start()
         print "Downloading song %d"%(i+1)
-        while downloader.Running:
-          time.sleep(0.05)
+        downloader.wait()
       except KeyboardInterrupt:
         downloader.stop()
         raise KeyboardInterrupt()
