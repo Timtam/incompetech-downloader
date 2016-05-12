@@ -11,6 +11,7 @@ class ArgumentParser(object):
   # the constructor will initialize the parser and add all arguments to it
   def __init__(self):
     self.__Parser=argparse.ArgumentParser()
+    self.__Parser.add_argument("page",help="page to download songs from",type=str)
     self.__Parser.add_argument("-g","--genres",help="put downloaded files into folders named by their genre",action="store_true")
     self.__Parser.add_argument("-o","--output",help="set the corresponding output directory",type=str)
     self.__Parser.add_argument("-s","--sort",help="sort the download list by parameters. Currently supported are alphabetical and date. Default is alphabetical",type=str)
@@ -18,6 +19,7 @@ class ArgumentParser(object):
   # the execute method will execute the parsing and invoke all following stuff
   def execute(self):
     args=self.__Parser.parse_args()
+    globals.Page=args.page.lower()
     # output directory definition
     if args.output:
       globals.OutputDirectory=args.output

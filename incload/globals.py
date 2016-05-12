@@ -8,18 +8,10 @@
 ChunkSize=128*1024
 # sort the downloaded files into the specific genre folders?
 DownloadByGenre=False
-# the path to the full list of incompetech
-FullList="/music/royalty-free/full_list.php"
-# the incompetech base url
-Incompetech="http://incompetech.com"
-# needed to identify the catalog number in some submodules
-# it's a regexp
-ISRC="USUAN\d+"
-# contains the path to the ISRC list on incompetech
-# contains all the music sorted by date
-ISRCList="/music/royalty-free/isrc_to_name.php"
 # self-explanatory
 OutputDirectory="./"
+# the parser/page the user wants to download from
+Page=""
 # reversing the download list can be activated here
 ReverseList=False
 # the sorting flags

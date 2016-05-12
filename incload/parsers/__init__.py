@@ -1,8 +1,8 @@
 """
-incload.parsers package
-
-This package contains all neded html parsers needed to operate with incompetech.com
-For example the full-list parser and the songpage parser.
+this package will contain the folders which contain the relevant parsers to parse the sites.
+The folder name needs to identify the page you want to download from.
+Currently the following parsers are supported:
+FullAlphabeticalParser: parses all songs on that page in alphabetical order
+FullDateParser: parses all songs on that page in release date order
+SongParser: parses a song of this page
 """
-from .fulllist import Parser as FullListParser
-from .songpage import Parser as SongPageParser
