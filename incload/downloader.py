@@ -1,5 +1,7 @@
 # downloading utilities for incload
 # a wrapper which uses urllib2 (on python2) and threading module to provide a parallelly running downloading interface
+# the hard way of life
+import ssl
 # the downloaded stuff will at first be stored in a StringIO buffer object
 import StringIO
 # some output capabilities
@@ -31,12 +33,15 @@ class Downloader(threading.Thread):
   # this small method will create a request for us
   def __getrequest(self):
     return urllib2.Request(self.__Url, None, {'User-Agent': globals.UserAgent})
+  # ssl contexts (needed to bypass certificate checking)
+  def __getcontext(self):
+    return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
   # used to call the corresponding page and get some information like file size and stuff
   def call(self):
     # open urllib2 object and try your best
     request=self.__getrequest()
     try:
-      connection=urllib2.urlopen(request)
+      connection=urllib2.urlopen(request, context=self.__getcontext())
       self.__Filesize=int(connection.info().getheaders("Content-Length")[0])
       connection.close()
     except:
@@ -48,7 +53,7 @@ class Downloader(threading.Thread):
     self.__Running=True
     # get request and open the url respectively
     request=self.__getrequest()
-    connection=urllib2.urlopen(request)
+    connection=urllib2.urlopen(request, context=self.__getcontext())
     # get small chunks and write them to our buffer
     # don't forget to lock up while doing this
     chunk=connection.read(globals.ChunkSize)
