@@ -10,7 +10,7 @@ class FullAlphabeticalParser(baseparser.BaseParser):
   # regex to identify catalogue numbers
   __ISRC="USUAN\d+"
   # this will contain the link to the page we want to parse
-  Source="http://incompetech.com/music/royalty-free/isrc_to_name.php"
+  Source="http://incompetech.com/music/royalty-free/full_list.php"
   # for this class, we'll need some constructor
   def __init__(self):
     # safety first, call the parent class constructor too

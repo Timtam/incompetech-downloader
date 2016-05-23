@@ -22,20 +22,19 @@ class Processor(object):
   # anyway, execution will be needed
   def execute(self):
     # we check if we actually support the site the user wants to download from
+    requiredparsers=["SongParser"]
+    if globals.Sort==globals.SORT_ALPHABETICAL: requiredparsers.append("FullAlphabeticalParser")
+    elif globals.Sort==globals.SORT_DATE: requiredparsers.append("FullDateParser")
     try:
-      parsers=__import__("incload.parsers.%s"%globals.Page, glob(), locals(), ["FullAlphabeticalParser", "FullDateParser", "SongParser"], -1)
+      parsers=__import__("incload.parsers.%s"%globals.Page, glob(), locals(), requiredparsers, -1)
     except ImportError:
-      print "Downloading from this site isn't supported yet. Check your spelling or otherwise open a ticket on GitHub so we can impplement it."
+      print "Either this site or this sorting scheme isn't supported for this site yet."
       return
     # at first we need to identify the url to use by scanning the selected sorting scheme
-#    try:
     if globals.Sort==globals.SORT_ALPHABETICAL:
       parser=parsers.FullAlphabeticalParser()
     elif globals.Sort==globals.SORT_DATE:
       parser=parsers.FullDateParser()
-#    except AttributeError:
-#      print "We already support downloading from this site, but this site doesn't support this sorting scheme yet."
-#      return
     # let's get started loading the list
     downloader=Downloader(parser.Source)
     # we don't need call() here, since incompetech doesn't deliver Content-Length and additional information for web pages
