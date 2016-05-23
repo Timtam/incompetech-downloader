@@ -27,8 +27,13 @@ class Processor(object):
     elif globals.Sort==globals.SORT_DATE: requiredparsers.append("FullDateParser")
     try:
       parsers=__import__("incload.parsers.%s"%globals.Page, glob(), locals(), requiredparsers, -1)
+      for p in requiredparsers:
+        getattr(parsers, p)
     except ImportError:
-      print "Either this site or this sorting scheme isn't supported for this site yet."
+      print "This site isn't supported yet."
+      return
+    except AttributeError:
+      print "This page doesn't support your wanted sorting scheme yet."
       return
     # at first we need to identify the url to use by scanning the selected sorting scheme
     if globals.Sort==globals.SORT_ALPHABETICAL:
