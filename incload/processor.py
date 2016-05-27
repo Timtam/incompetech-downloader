@@ -6,6 +6,7 @@ glob=globals
 # at first these from the standard lib
 import os.path
 import sys
+import types
 # then the ones we developed
 from incload.downloader import Downloader
 from incload import globals
@@ -61,19 +62,24 @@ class Processor(object):
       # defining link
       link=links[i]
       # we need to download the song page first
-      # doing that, we will need to construct the full link by concatenating them
-      downloader=Downloader(link)
-      try:
-        downloader.start()
-        print "Downloading song %d"%(i+1)
-        downloader.wait()
-      except KeyboardInterrupt:
-        downloader.stop()
-        raise KeyboardInterrupt()
+      # but only if we actually got downloadable links from the parser
+      # otherwise we pass it to the parser directly
+      if type(link)==types.StringType:
+        downloader=Downloader(link)
+        try:
+          downloader.start()
+          print "Downloading song %d"%(i+1)
+          downloader.wait()
+        except KeyboardInterrupt:
+          downloader.stop()
+          raise KeyboardInterrupt()
       # and now parse the page
       print "Parsing page for song %d"%(i+1)
       parser=parsers.SongParser()
-      parser.feed(downloader.read())
+      if type(link)==types.StringType:
+        parser.feed(downloader.read())
+      else:
+        parser.feed(link)
       print "Detected song:"
       print "\tTitle: %s"%parser.SongTitle
       print "\tGenre: %s"%parser.Genre
