@@ -5,7 +5,7 @@ class FullAlphabeticalParser(object):
   Source="https://www.joshwoodward.com/mod/song/view-artist-2/ajax/get-songs.php"
   def __init__(self):
     self.__Results={}
-  def feed(self, data, sorting_key="name"):
+  def feed(self, data):
     songs=json.loads(data)
     for song in songs.values():
       nsong={}
@@ -18,7 +18,7 @@ class FullAlphabeticalParser(object):
         nsong['genre']=song['genre']
         nsong['title']="%s (instrumental)"%song['name']
         nsong['link']="https://joshwoodward.com/mod/song/force-download.php?file=%s"%song['instrumental_mp3']
-        self.__Results[song[sorting_key]]=nsong
+        self.__Results['%s (instrumental)"%(song['name'])]=nsong
   @property
   def Result(self):
     order=sorted(self.__Results.keys())
