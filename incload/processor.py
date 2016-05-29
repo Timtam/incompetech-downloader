@@ -14,7 +14,10 @@ from incload import globals
 class Processor(object):
   # all chars forbidden in file names
   ForbiddenChars=r'<>?":|\/*'
-  # constructor not needed yet
+  def __init__(self):
+    # allocating some variables
+    self.dlMaxCount=0
+    self.dlCount=0
   # will automatically remove all forbidden characters and replace them with underscores
   def formatFilename(self,filename):
     for c in self.ForbiddenChars:
@@ -57,7 +60,9 @@ class Processor(object):
     if globals.ReverseList:
       links=links[::-1]
     # we finished parsing, let's get started downloading
-    print "Finished song parsing. Found %d songs to download"%len(links)
+    # to create some statistics
+    self.dlMaxCount=len(links)
+    print "Finished song parsing. Found %d songs to download"%self.dlMaxCount
     for i in range(len(links)):
       # defining link
       link=links[i]
@@ -111,3 +116,9 @@ class Processor(object):
       # and after that, save the file
       downloader.write(downloadfile,True)
       print "Finished!"
+      self.dlCount=self.dlCount+1
+
+  # needed to display statistics at the end of the process
+  def printStatistics(self):
+    print "Downloaded %d files out of %d files (%.02f%%)"%(self.dlCount, self.dlMaxCount, float(self.dlCount)*100/float(self.dlMaxCount))
+

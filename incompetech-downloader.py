@@ -20,4 +20,6 @@ try:
   processor.execute()
 except KeyboardInterrupt:
   print "User interruption encountered."
+finally:
+  processor.printStatistics()
 print "Finished downloading. Have fun!"
