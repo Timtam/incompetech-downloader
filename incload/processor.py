@@ -95,7 +95,7 @@ class Processor(object):
       if not os.path.exists(downloadfolder):
         # we will have to create it
         try:
-          os.mkdirs(downloadfolder)
+          os.makedirs(downloadfolder)
         except (OSError, IOError):
           print "An error ocurred while creating the download folder. Please fix this error and try again"
           sys.exit(1)
