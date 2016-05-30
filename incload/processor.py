@@ -91,11 +91,11 @@ class Processor(object):
       # time to construct the actual download target and create folders if needed
       downloadfolder=os.path.abspath(globals.OutputDirectory)
       if globals.DownloadByGenre:
-        downloadfolder=os.path.join(downloadfolder,parser.Genre)
+        downloadfolder=os.path.join(downloadfolder,self.formatFilename(parser.Genre))
       if not os.path.exists(downloadfolder):
         # we will have to create it
         try:
-          os.mkdir(downloadfolder)
+          os.mkdirs(downloadfolder)
         except (OSError, IOError):
           print "An error ocurred while creating the download folder. Please fix this error and try again"
           sys.exit(1)
@@ -120,5 +120,8 @@ class Processor(object):
 
   # needed to display statistics at the end of the process
   def printStatistics(self):
-    print "Downloaded %d files out of %d files (%.02f%%)"%(self.dlCount, self.dlMaxCount, float(self.dlCount)*100/float(self.dlMaxCount))
+    if self.dlMaxCount==0:
+      print "No statistical information available!"
+    else:
+      print "Downloaded %d files out of %d files (%.02f%%)"%(self.dlCount, self.dlMaxCount, float(self.dlCount)*100/float(self.dlMaxCount))
 
