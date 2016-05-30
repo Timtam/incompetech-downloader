@@ -44,8 +44,8 @@ class Downloader(threading.Thread):
   # used to call the corresponding page and get some information like file size and stuff
   def call(self):
     # open urllib2 object and try your best
-    request=self.__getrequest()
     try:
+      request=self.__getrequest()
       connection=urllib2.urlopen(request, context=self.__getcontext())
       self.__Filesize=int(connection.info().getheaders("Content-Length")[0])
       connection.close()
