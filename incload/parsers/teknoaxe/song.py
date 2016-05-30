@@ -12,7 +12,6 @@ class SongParser(baseparser.BaseParser):
     self.Link=""
   def feed(self, data):
     self.SongTitle=data["title"]
-    print "Downloading page for song '%s'"%self.SongTitle
     dl=downloader.Downloader(data["link"])
     try:
       dl.start()
@@ -20,7 +19,6 @@ class SongParser(baseparser.BaseParser):
     except KeyboardInterrupt:
       dl.stop()
       raise KeyboardInterrupt()
-    print "Parsing page for song '%s'"%self.SongTitle
     baseparser.BaseParser.feed(self, dl.read())
 
   def handle_starttag(self, tag, attr):

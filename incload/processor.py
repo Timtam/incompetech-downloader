@@ -109,7 +109,9 @@ class Processor(object):
       downloader=Downloader(parser.Link)
       verification=downloader.call()
       if not verification:
-        print "The resolved link couldn't be verified on this server. Please try again later. Skipping..."
+        print "The resolved link couldn't be verified on this server. Please try again later"
+        print "Link: %s"%link
+        print "Skipping..."
         continue
       try:
         downloader.start()
