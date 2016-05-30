@@ -2,7 +2,7 @@ from incload import downloader
 from incload.parsers import baseparser
 
 class FullAlphabeticalParser(baseparser.BaseParser):
-  Source="http://audionautix.com/index.php"
+  Source="http://audionautix.com"
   def __init__(self):
     baseparser.BaseParser.__init__(self)
     self.__DetectionLevel=0
@@ -47,12 +47,14 @@ class FullAlphabeticalParser(baseparser.BaseParser):
       else:
         if tag=="h2":
           self.__ParsingTitle=True
-        elif tag=="img":
-          nsong={}
-          nsong['genre']=self.__Genre
-          nsong['title']=self.__Title
-          nsong['link']="%s%s"%(self.Source, self.getAttribute(attr, "href"))
-          self.__Results[self.__Title]=nsong
+        elif tag=="a":
+          sclass=self.getAttribute(attr, "class")
+          if sclass=="download":
+            nsong={}
+            nsong['genre']=self.__Genre
+            nsong['title']=self.__Title
+            nsong['link']="%s%s"%(self.Source, self.getAttribute(attr, "href"))
+            self.__Results[self.__Title]=nsong
   def handle_endtag(self, tag):
     if self.__ParsingSongs and tag=="ul":
       self.__ParsingSongs=False
