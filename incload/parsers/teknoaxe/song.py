@@ -21,7 +21,7 @@ class SongParser(baseparser.BaseParser):
       dl.stop()
       raise KeyboardInterrupt()
     print "Parsing page for song '%s'"%self.SongTitle
-    baseparser.BaseParser.feed(self, data)
+    baseparser.BaseParser.feed(self, dl.read())
 
   def handle_starttag(self, tag, attr):
     if tag=="li":
