@@ -18,6 +18,7 @@ class Processor(object):
     # allocating some variables
     self.dlMaxCount=0
     self.dlCount=0
+    self.dlAlreadyExist=0
   # will automatically remove all forbidden characters and replace them with underscores
   def formatFilename(self,filename):
     for c in self.ForbiddenChars:
@@ -102,6 +103,7 @@ class Processor(object):
       downloadfile=os.path.join(downloadfolder,self.formatFilename(parser.SongTitle)+".mp3")
       if os.path.exists(downloadfile):
         print "This file already exists."
+        self.dlAlreadyExist=self.dlAlreadyExist+1
         continue
       # let's get the actually important downloader ready :)
       downloader=Downloader(parser.Link)
@@ -126,5 +128,6 @@ class Processor(object):
     if self.dlMaxCount==0:
       print "No statistical information available!"
     else:
-      print "Downloaded %d files out of %d files (%.02f%%)"%(self.dlCount, self.dlMaxCount, float(self.dlCount)*100/float(self.dlMaxCount))
-
+      print "Downloaded %d files out of %d files"%(self.dlCount, self.dlMaxCount)
+      print "%d files already exist"%self.dlAlreadyExist
+      print "Total: %.02f%% finished"%(float(self.dlCount)*100/float(self.dlMaxCount))
