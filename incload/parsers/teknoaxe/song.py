@@ -27,7 +27,7 @@ class SongParser(baseparser.BaseParser):
     if tag=="li":
       title=self.getAttribute(attr, "title")
       if title:
-        mgenre=self.__REGenre.match(title)
+        mgenre=self.__GenreIdentifier.match(title)
         if mgenre:
           self.Genre=mgenre.group(1)
     elif tag=="a":
