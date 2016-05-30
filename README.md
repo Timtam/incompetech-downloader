@@ -15,8 +15,10 @@ I don't guarantee that this list will always be the most up-to-date one, if you 
 
 Anyway, these sites are supported at this time:
 
+* audionautix.com
 * incompetech.com
 * joshwoodward.com
+* teknoaxe.com
 
 I will try to implement a command-line parameter to list all supported sites including the supported sorting algorithms and everything else relating to them.
 
