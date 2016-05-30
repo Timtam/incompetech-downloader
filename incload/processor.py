@@ -130,4 +130,4 @@ class Processor(object):
     else:
       print "Downloaded %d files out of %d files"%(self.dlCount, self.dlMaxCount)
       print "%d files already exist"%self.dlAlreadyExist
-      print "Total: %.02f%% finished"%(float(self.dlCount)*100/float(self.dlMaxCount))
+      print "Total: %.02f%% finished"%(float(self.dlCount+self.dlAlreadyExist)*100/float(self.dlMaxCount))
