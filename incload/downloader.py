@@ -11,17 +11,22 @@ import time
 # for multi-threading purposes
 import threading
 # for internet access
+import urllib
 import urllib2
 # and the globals, as always
 from incload import globals
 
 class Downloader(threading.Thread):
-  # constructor which also accepts an url
-  def __init__(self, url):
+  # constructor which also accepts an url and post data
+  def __init__(self, url, post=None):
     # parent-class constructor call
     threading.Thread.__init__(self)
     # some properties, as always
     self.__Url=url
+    if post:
+      self.__Post=urllib.urlencode(post)
+    else:
+      self.__Post=post
     self.__Filesize=0
     self.__Downloaded=0
     self.__Buffer=StringIO.StringIO()
@@ -32,7 +37,7 @@ class Downloader(threading.Thread):
     self.__StopEvent=threading.Event()
   # this small method will create a request for us
   def __getrequest(self):
-    return urllib2.Request(self.__Url, None, {'User-Agent': globals.UserAgent})
+    return urllib2.Request(self.__Url, self.__Post, {'User-Agent': globals.UserAgent})
   # ssl contexts (needed to bypass certificate checking)
   def __getcontext(self):
     return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
