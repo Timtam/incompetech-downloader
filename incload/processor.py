@@ -9,6 +9,7 @@ import sys
 import types
 # then the ones we developed
 from incload.downloader import Downloader
+from incload.exceptions import *
 from incload import globals
 
 class Processor(object):
@@ -82,10 +83,14 @@ class Processor(object):
       # and now parse the page
       print "Parsing page for song %d"%(i+1)
       parser=parsers.SongParser()
-      if type(link)==types.StringType:
-        parser.feed(downloader.read())
-      else:
-        parser.feed(link)
+      try:
+        if type(link)==types.StringType:
+          parser.feed(downloader.read())
+        else:
+          parser.feed(link)
+      except SongParseError as e:
+        print "Unable to parse this song: %s"%str(e)
+        continue
       print "Detected song:"
       print "\tTitle: %s"%parser.SongTitle
       print "\tGenre: %s"%parser.Genre
@@ -110,7 +115,7 @@ class Processor(object):
       verification=downloader.call()
       if not verification:
         print "The resolved link couldn't be verified on this server. Please try again later"
-        print "Link: %s"%parser.link
+        print "Link: %s"%parser.Link
         print "Skipping..."
         continue
       try:
