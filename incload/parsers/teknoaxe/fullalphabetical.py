@@ -59,8 +59,15 @@ class FullAlphabeticalParser(baseparser.BaseParser):
     elif self.__DetectionLevel==2:
       if tag=="a":
         sclass=self.getAttribute(attr, "class")
-        if sclass=="genrelink":
+        if sclass=="genre_post":
           self.__Song=self.getAttribute(attr, "href")
+      elif tag=="img":
+        sclass=self.getAttribute(attr, "class")
+        if sclass=="genre_image":
+          salt=self.getAttribute(attr, "alt")
+          salt=salt.split(":")[1]
+          self.__Songs[salt]={"link":self.__Song, "title":salt}
+          self.__Song=""
   def handle_data(self, data):
     if self.__DetectionLevel==0 and self.__FooterItemCount==2 and self.__Category:
       if data != "Music" and data != "Commission":
@@ -69,9 +76,6 @@ class FullAlphabeticalParser(baseparser.BaseParser):
     elif self.__DetectionLevel==1 and self.__Genre:
       self.__Genres[data]=self.__Genre
       self.__Genre=""
-    elif self.__DetectionLevel==2 and self.__Song:
-      self.__Songs[data]={"link": self.__Song, "title": data}
-      self.__Song=""
   @property
   def Result(self):
     ordered=sorted(self.__Songs.keys())
