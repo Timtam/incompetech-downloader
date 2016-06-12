@@ -47,7 +47,11 @@ class Downloader(threading.Thread):
     try:
       request=self.__getrequest()
       connection=urllib2.urlopen(request, context=self.__getcontext())
-      self.__Filesize=int(connection.info().getheaders("Content-Length")[0])
+      try:
+        self.__Filesize=int(connection.info().getheaders("Content-Length")[0])
+      except IndexError:
+        # the download will work, but no header information containing the actual file size is available
+        pass
       connection.close()
     except:
       # in this case, our best wasn't enough
@@ -114,8 +118,12 @@ class Downloader(threading.Thread):
     # the displaying loop
     try:
       while self.Running:
-        percentage=self.DownloadedSize*100/self.FullSize
-        line="\rDownloading... %d%% finished"%percentage
+        line="\rDownloading... "
+        if self.FullSize:
+          percentage=self.DownloadedSize*100/self.FullSize
+          line=line+"%d%% finished"%percentage
+        else:
+          line=line+"Remaining size unknown"
         line=line+" "*(40-len(line))
         sys.stdout.write(line)
         time.sleep(1.0)
