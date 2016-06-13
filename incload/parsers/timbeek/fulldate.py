@@ -17,7 +17,9 @@ class FullDateParser(baseparser.BaseParser):
   def handle_data(self, data):
     if self.isEmpty(data): return
     if self.__ParseTitle:
-      self._Results.append({"title":data.strip(), "link":self.__Link})
+      # we're implementing a quick fix to the actual site here
+      # some links seem to be pointing to the wrong direction, so we try to fix them up here so we don't run into any dead ends
+      self._Results.append({"title":data.strip(), "link":self.__Link if "royalty-free-music" in self.__Link else self.__Link.replace("free-music","royalty-free-music")})
       self.__Link=""
       self.__ParseTitle=False
       return

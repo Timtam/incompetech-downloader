@@ -3,7 +3,6 @@ from .fulldate import FullDateParser
 class FullAlphabeticalParser(FullDateParser):
   @property
   def Result(self):
-    print len(self._Results)
     idict={}
     for i in range(len(self._Results)):
       idict[self._Results[i]["title"]]=i
