@@ -29,16 +29,16 @@ class FullAlphabeticalParser(baseparser.BaseParser):
         print "Parsing genre list for category '%s'"%category
         self.feed(dl.read())
       self.__DetectionLevel=2
-      for genre in sorted(self.__Genres.keys()):
-        print "Downloading song list for genre '%s'"%genre
-        dl=downloader.Downloader(self.__Genres[genre])
+      for self.__Genre in sorted(self.__Genres.keys()):
+        print "Downloading song list for genre '%s'"%self.__Genre
+        dl=downloader.Downloader(self.__Genres[self.__Genre])
         try:
           dl.start()
           dl.wait()
         except KeyboardInterrupt:
           dl.stop()
           raise KeyboardInterrupt()
-        print "Parsing song list for genre '%s'"%genre
+        print "Parsing song list for genre '%s'"%self.__Genre
         self.feed(dl.read())
 
   def handle_starttag(self, tag, attr):
@@ -66,7 +66,7 @@ class FullAlphabeticalParser(baseparser.BaseParser):
         if sclass=="genre_image":
           salt=self.getAttribute(attr, "alt")
           salt=salt.split(":")[1]
-          self.__Songs[salt]={"link":self.__Song, "title":salt}
+          self.__Songs[salt]={"link":self.__Song, "title":salt, "genre":self.__Genre}
           self.__Song=""
   def handle_data(self, data):
     if self.__DetectionLevel==0 and self.__FooterItemCount==2 and self.__Category:
