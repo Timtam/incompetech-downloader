@@ -19,6 +19,7 @@ Anyway, these sites are supported at this time:
 * incompetech.com
 * joshwoodward.com
 * teknoaxe.com
+* timbeek.com
 
 I will try to implement a command-line parameter to list all supported sites including the supported sorting algorithms and everything else relating to them.
 
