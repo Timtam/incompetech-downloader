@@ -112,7 +112,10 @@ class Processor(object):
         continue
       # let's get the actually important downloader ready :)
       downloader=Downloader(parser.Link)
-      verification=downloader.call()
+      try:
+        verification=downloader.call()
+      except KeyboardInterrupt:
+        raise KeyboardInterrupt()
       if not verification:
         print "The resolved link couldn't be verified on this server. Please try again later"
         print "Link: %s"%parser.Link

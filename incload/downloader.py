@@ -44,6 +44,7 @@ class Downloader(threading.Thread):
   # used to call the corresponding page and get some information like file size and stuff
   def call(self):
     # open urllib2 object and try your best
+    connection=None
     try:
       request=self.__getrequest()
       connection=urllib2.urlopen(request, context=self.__getcontext())
@@ -52,10 +53,13 @@ class Downloader(threading.Thread):
       except IndexError:
         # the download will work, but no header information containing the actual file size is available
         pass
-      connection.close()
+    except KeyboardInterrupt:
+      raise KeyboardInterrupt()
     except:
       # in this case, our best wasn't enough
       return False
+    finally:
+      if connection: connection.close()
     return True
   # will run the actual download process
   def run(self):
