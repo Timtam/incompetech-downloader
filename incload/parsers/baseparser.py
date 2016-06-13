@@ -7,7 +7,7 @@ class BaseParser(HTMLParser.HTMLParser):
     # call parent class constructor
     HTMLParser.HTMLParser.__init__(self)
     # define some stuff here
-    self.__EmptyChars=' '+chr(10) # will be stripped later on to detect empty strings
+    self.__EmptyChars=' '+chr(10)+chr(194)+chr(160) # will be stripped later on to detect empty strings
     
   # we will add some helpers here
   def getAttribute(self,attr,attrname):
