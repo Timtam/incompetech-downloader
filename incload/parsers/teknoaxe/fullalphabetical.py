@@ -66,7 +66,8 @@ class FullAlphabeticalParser(baseparser.BaseParser):
         if sclass=="genre_image":
           salt=self.getAttribute(attr, "alt")
           salt=salt.split(":")[1]
-          self.__Songs[salt]={"link":self.__Song, "title":salt, "genre":self.__Genre}
+          if not salt in self.__Songs:
+            self.__Songs[salt]={"link":self.__Song, "title":salt, "genre":self.__Genre}
           self.__Song=""
   def handle_data(self, data):
     if self.__DetectionLevel==0 and self.__FooterItemCount==2 and self.__Category:
