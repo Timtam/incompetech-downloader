@@ -13,6 +13,8 @@ import threading
 # for internet access
 import urllib
 import urllib2
+# to catch download interruptions
+import httplib
 # and the globals, as always
 from incload import globals
 
@@ -46,8 +48,7 @@ class Downloader(threading.Thread):
     # open urllib2 object and try your best
     connection=None
     try:
-      request=self.__getrequest()
-      connection=urllib2.urlopen(request, context=self.__getcontext())
+      connection=self.__getconnection()
       try:
         self.__Filesize=int(connection.info().getheaders("Content-Length")[0])
       except IndexError:
@@ -61,27 +62,45 @@ class Downloader(threading.Thread):
     finally:
       if connection: connection.close()
     return True
+  # returns the connection to use
+  # can even open the connection to support download resuming
+  def __getconnection(self):
+    request=self.__getrequest()
+    if self.__Downloaded>0:
+      request.add_header("Range","bytes=%d-"%self.__Downloaded)
+    try:
+      connection=urllib2.urlopen(request, context=self.__getcontext())
+      if self.__Downloaded>0 and connection.getcode()!=206:
+        return None
+    except urllib2.HTTPError:
+      return None
+    return connection
   # will run the actual download process
   def run(self):
     self.__Running=True
-    # get request and open the url respectively
-    request=self.__getrequest()
-    connection=urllib2.urlopen(request, context=self.__getcontext())
+    connection=self.__getconnection()
     # get small chunks and write them to our buffer
     # don't forget to lock up while doing this
-    chunk=connection.read(globals.ChunkSize)
-    while chunk:
+    while True:
+      try:
+        chunk=connection.read(globals.ChunkSize)
+      except httplib.IncompleteRead:
+        print "incomplete read encountered"
+        connection.close()
+        self.run()
+        break
+      if not chunk:
+        connection.close()
+        break
       # if stop command is set
       if self.__StopEvent.isSet():
         self.__Buffer.close()
-        self.__Running=False
+        connection.close()
         break
       self.__RetrievalLock.acquire()
       self.__Downloaded=self.__Downloaded+len(chunk)
       self.__Buffer.write(chunk)
       self.__RetrievalLock.release()
-      chunk=connection.read(globals.ChunkSize)
-    connection.close()
     self.__Running=False
   # we support download canceling
   def stop(self):
