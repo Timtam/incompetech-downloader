@@ -19,6 +19,11 @@ import httplib
 from incload import globals
 
 class Downloader(threading.Thread):
+  # some constants
+  WAITING=0
+  DOWNLOADING=1
+  SUCCEEDED=2
+  FAILED=3
   # constructor which also accepts an url and post data
   def __init__(self, url, post=None):
     # parent-class constructor call
@@ -32,7 +37,7 @@ class Downloader(threading.Thread):
     self.__Filesize=0
     self.__Downloaded=0
     self.__Buffer=StringIO.StringIO()
-    self.__Running=False
+    self.__Status=self.WAITING
     # some locks to prevent ... locks? :)
     self.__RetrievalLock=threading.Lock()
     # and an event to support stopping
@@ -71,21 +76,24 @@ class Downloader(threading.Thread):
     try:
       connection=urllib2.urlopen(request, context=self.__getcontext())
       if self.__Downloaded>0 and connection.getcode()!=206:
+        connection.close()
         return None
     except urllib2.HTTPError:
       return None
     return connection
   # will run the actual download process
   def run(self):
-    self.__Running=True
+    self.__Status=self.DOWNLOADING
     connection=self.__getconnection()
+    if not connection:
+      self.__Status=self.FAILED
+      return
     # get small chunks and write them to our buffer
     # don't forget to lock up while doing this
     while True:
       try:
         chunk=connection.read(globals.ChunkSize)
-      except httplib.IncompleteRead:
-        print "incomplete read encountered"
+      except httplib.IncompleteRead as e:
         connection.close()
         self.run()
         break
@@ -101,7 +109,8 @@ class Downloader(threading.Thread):
       self.__Downloaded=self.__Downloaded+len(chunk)
       self.__Buffer.write(chunk)
       self.__RetrievalLock.release()
-    self.__Running=False
+    if self.__Status==self.DOWNLOADING:
+      self.__Status=self.SUCCEEDED
   # we support download canceling
   def stop(self):
     self.__RetrievalLock.acquire()
@@ -110,14 +119,14 @@ class Downloader(threading.Thread):
   # we also support retrieval to process it further inside of python
   def read(self):
     # if the download is still running, don't do it
-    if self.Running:
+    if self.Status==self.DOWNLOADING:
       return ""
     self.__Buffer.seek(0)
     return self.__Buffer.read()
   # but also writing to file directly
   def write(self, filename, binary=False):
     # if the download is still running, don't do it
-    if self.Running: 
+    if self.Status==self.DOWNLOADING: 
       return False
     # construct the opening mode
     mode="w"+("b" if binary else "")
@@ -131,16 +140,16 @@ class Downloader(threading.Thread):
   # it of course doesn't run multi-threaded
   def showProgress(self):
     # while this class is actually an alive thread but download is not running yet, wait until this is the case
-    while self.isAlive() and not self.Running:
+    while self.isAlive() and self.Status==self.WAITING:
       time.sleep(0.01)
     # if we aren't actually running, we stop this desaster (meaning we already finished)
-    if not self.Running:
+    if self.Status!=self.DOWNLOADING:
       return
     # show some stuff to fill our progress line
     sys.stdout.write("")
     # the displaying loop
     try:
-      while self.Running:
+      while self.Status==self.DOWNLOADING:
         line="\rDownloading... "
         if self.FullSize:
           percentage=self.DownloadedSize*100/self.FullSize
@@ -155,7 +164,7 @@ class Downloader(threading.Thread):
   # we can wait until the downloader actually finished
   def wait(self):
     # this means we wait while the download is running or the thread is about to start the download
-    while self.isAlive() or self.Running:
+    while self.isAlive() or self.Status==self.DOWNLOADING:
       time.sleep(0.01)
   # some properties to retrieve data like remaining size and stuff
   @property
@@ -175,10 +184,10 @@ class Downloader(threading.Thread):
   def RemainingSize(self):
     return self.FullSize-self.DownloadedSize
   @property
-  def Running(self):
+  def Status(self):
     try:
       self.__RetrievalLock.acquire()
-      state=self.__Running
+      state=self.__Status
       self.__RetrievalLock.release()
       return state
     except KeyboardInterrupt:
