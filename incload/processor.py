@@ -88,6 +88,12 @@ class Processor(object):
           parser.feed(downloader.read())
         else:
           parser.feed(link)
+        if not hasattr(parser, "SongTitle"):
+          raise SongParseError("no valid song title found")
+        elif not hasattr(parser, "Genre"):
+          raise SongParseError("no valid genre found")
+        elif not hasattr(parser, "Link"):
+          raise SongParseError("no valid downloadlink found")
       except SongParseError as e:
         print "Unable to parse this song: %s"%str(e)
         continue
