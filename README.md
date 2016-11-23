@@ -16,6 +16,7 @@ I don't guarantee that this list will always be the most up-to-date one, if you 
 Anyway, these sites are supported at this time:
 
 * audionautix.com
+* freepd.com
 * incompetech.com
 * joshwoodward.com
 * teknoaxe.com
