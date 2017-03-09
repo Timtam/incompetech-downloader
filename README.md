@@ -19,6 +19,7 @@ Anyway, these sites are supported at this time:
 * freepd.com
 * incompetech.com
 * joshwoodward.com
+* soundimage.org
 * teknoaxe.com
 * timbeek.com
 
